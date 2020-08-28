@@ -1,0 +1,4 @@
+   temperatureEl.innerHTML='';    
+        var tempText=document.createElement('p')
+        tempText.setAttribute('src',response.data.temp);
+        temperatureEl.appendChild(tempText);
