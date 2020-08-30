@@ -83,7 +83,6 @@ var getWeatherInfo = function (city) {
     fetch(apiUrl).then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log(data);
                 
                 //condition Img
                 var weathericon = data.weather[0].icon;
@@ -112,12 +111,25 @@ var getWeatherInfo = function (city) {
                 var windsmph = (windSpeedValue * 2.237).toFixed(1);
                 windSpeedEl.textContent = windsmph + " mph ";
 
+                // UV 
+
+                var coordinates = "&lon=" + data.coord.lon + "&lat=" + data.coord.lat
+                var uvUrl = "http://api.openweathermap.org/data/2.5/uvi?";
+                fetch(uvUrl + coordinates + "&appid=" + apiKey).then(function(uvResponse){
+                    uvResponse.json().then(function(uvData){
+                        console.log(uvData);
+                        var uvValue = uvData["value"]
+                        uvIndexEl.innerHTML = uvValue;
+
+                    })
+                })
+
                 //forecast
 
                 var fiveApi = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + apiKey;
                 fetch(fiveApi).then(function (response) {
                     response.json().then(function (data) {
-                        console.log(data);
+                
                         //next day information
                         var nextDate = (data.list[0].dt_txt)
                         var date = nextDate.substr(0, 10);
