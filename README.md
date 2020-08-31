@@ -11,4 +11,4 @@ Build a weather dashboard application with search functionality to find current 
 
 
 
-![Screenshot](./assets/image/screenshot.png)
+![Screenshot](./assets/image/Screenshot.png)
