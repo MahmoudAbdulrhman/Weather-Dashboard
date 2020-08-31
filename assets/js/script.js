@@ -22,6 +22,8 @@ var currentweatherEl = document.querySelector("#current-weather");
 
 var iconEl = document.querySelector("#icon");
 
+var oldCitySearch = [];
+
 
 
 // Forecast Var
@@ -56,19 +58,6 @@ var fifthDayTemp = document.querySelector("#fTemp4")
 var fifthDayHumidity = document.querySelector("#fHumidity4")
 
 var apiKey = "d55a30c7fcf4dbc07c554680997e50c7";
-
-
-var loadCity = function () {
-
-}
-
-var saveCity = function (citySave) {
-    // Store
-    var storedCity = localStorage.getItem("city")
-    console.log(storedCity);
-    var cityArry = [storedCity, citySave]
-    localStorage.setItem("city", cityArry);
-}
 
 
 
@@ -117,7 +106,6 @@ var getWeatherInfo = function (city) {
                 var uvUrl = "http://api.openweathermap.org/data/2.5/uvi?";
                 fetch(uvUrl + coordinates + "&appid=" + apiKey).then(function(uvResponse){
                     uvResponse.json().then(function(uvData){
-                        console.log(uvData);
                         var uvValue = uvData["value"]
                         uvIndexEl.innerHTML = uvValue;
 
@@ -147,7 +135,7 @@ var getWeatherInfo = function (city) {
                         nextDayHumidity.textContent = (nextHumidity) + "%";
 
                         //secned day information
-                        var secDate = (data.list[5].dt_txt)
+                        var secDate = (data.list[8].dt_txt)
                         var date1 = secDate.substr(0, 10);
                         secDayDate.textContent = date1
 
@@ -155,30 +143,30 @@ var getWeatherInfo = function (city) {
                         img1El.setAttribute("src", (iconUrl));
 
 
-                        var secDay = (data.list[5].main.temp);
+                        var secDay = (data.list[8].main.temp);
                         var temprF2 = Math.round((secDay - 273.15) * 1.80 + 32);
                         secDayTemp.innerHTML = temprF2 +" &deg;F" ;
 
-                        var secHumidity = (data.list[5].main.humidity);
+                        var secHumidity = (data.list[8].main.humidity);
                         secDayHumidity.textContent = (secHumidity) + "%";
 
                         //thred day information
-                        var thrdDate = (data.list[13].dt_txt)
+                        var thrdDate = (data.list[14].dt_txt)
                         var date2 = thrdDate.substr(0, 10);
                         thrdDayDate.textContent = date2
 
                         var img2El = document.querySelector("#wImg2");
                         img2El.setAttribute("src", (iconUrl));
 
-                        var thrdDay = (data.list[13].main.temp);
+                        var thrdDay = (data.list[14].main.temp);
                         var temprF3 = Math.round((thrdDay - 273.15) * 1.80 + 32);
                         thrdDayTemp.innerHTML = temprF3 +" &deg;F" ;
 
-                        var thrdHumidity = (data.list[13].main.humidity);
+                        var thrdHumidity = (data.list[14].main.humidity);
                         thrdDayHumidity.textContent = (thrdHumidity) + "%";
 
                         //forth day information
-                        var forthDate = (data.list[21].dt_txt)
+                        var forthDate = (data.list[23].dt_txt)
                         var date3 = forthDate.substr(0, 10);
                         forthDayDate.textContent = date3
 
@@ -186,15 +174,15 @@ var getWeatherInfo = function (city) {
                         img3El.setAttribute("src", (iconUrl));
 
 
-                        var forthDay = (data.list[21].main.temp);
+                        var forthDay = (data.list[23].main.temp);
                         var temprF4 = Math.round((forthDay - 273.15) * 1.80 + 32);
                         forthDayTemp.innerHTML = temprF4 +" &deg;F" ;
 
-                        var forthHumidity = (data.list[21].main.humidity);
+                        var forthHumidity = (data.list[23].main.humidity);
                         forthDayHumidity.textContent = (forthHumidity) + "%";
 
                         //fifth day information
-                        var fifthDate = (data.list[21].dt_txt)
+                        var fifthDate = (data.list[30].dt_txt)
                         var date4 = fifthDate.substr(0, 10);
                         fifthDayDate.textContent = date4
 
@@ -202,11 +190,11 @@ var getWeatherInfo = function (city) {
                         img4El.setAttribute("src", (iconUrl));
 
 
-                        var fifthDay = (data.list[4].main.temp);
+                        var fifthDay = (data.list[30].main.temp);
                         var temprF5 = Math.round((fifthDay - 273.15) * 1.80 + 32);
                         fifthDayTemp.innerHTML = temprF5 + " &deg;F";
 
-                        var fifthHumidity = (data.list[4].main.humidity);
+                        var fifthHumidity = (data.list[30].main.humidity);
                         fifthDayHumidity.textContent = (fifthHumidity) + "%";
 
                     })
@@ -221,37 +209,58 @@ var getWeatherInfo = function (city) {
 
     })
 
-    cityButton()
+  
 
 }
 
-var cityButton = function () {
-    //create clickable button 
 
-    var btn = document.createElement("BUTTON");   // Create a <button> element
-    btn.setAttribute("id", "loadButton");
-    btn.innerHTML = cityInputEl.value.trim();                   // Insert text
-    buttonContainer.appendChild(btn);               // Append <button> to <body>
-}
 
-var formSubmitHandler = function (event) {
+// when search button is clicked 
+var formSubmitHandler = function(event) {
     event.preventDefault();
-
-    var cityName = cityInputEl.value.trim();
-
-    console.log(cityName);
-    if (cityName) {
-        saveCity(cityName);
-        getWeatherInfo(cityName);
-        cityInputEl.value = ""
-        console.log(cityName);
+    // city to appear after search
+    var askCity = cityInputEl.value.trim();
+    if (askCity) {
+        cityList = document.createElement("li");
+        cityList.className = "nav-item";
+        cityList.innerHTML="<a href='#' class='border nav-link'><span data-feather='file'></span>"+askCity+"</a>";
+        buttonContainer.appendChild(cityList);
+        oldCitySearch.push(askCity);
+        localStorage.setItem("oldCities", JSON.stringify(oldCitySearch));
+        getWeatherInfo(askCity);
+        cityInputEl.value = "";
     } else {
-        alert("Please enter a city name");
+        alert("Please enter a city.");
     }
-
 };
+
+var sideSearches = function (event) {
+    var cityName = event.target.textContent;
+    getWeatherInfo(cityName);
+}
+
+// local storage and saving
+var localSafe = function () {
+    // local storage
+   var oldCities = JSON.parse(localStorage.getItem('oldCities'));
+   if (oldCities === null) {
+       return;
+   }
+   else {
+       for (var i = 0; i < oldCities.length; i++) {
+           cityList = document.createElement("li");
+           cityList.className = "nav-item";
+           cityList.innerHTML="<a href='#' class='border nav-link'><span data-feather='file'></span>"+oldCities[i]+"</a>";
+           buttonContainer.appendChild(cityList);
+       }
+   }
+}
+localSafe();
+
+
 
 
 
 userFormEl.addEventListener("submit", formSubmitHandler);
+buttonContainer.addEventListener("click", sideSearches);
 
