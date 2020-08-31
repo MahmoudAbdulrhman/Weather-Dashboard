@@ -5,4 +5,4 @@
 
 
 
-![Screenshot](./assets/images/screenshot.png)
+![Screenshot](./assets/image/screenshot.png)
