@@ -103,7 +103,7 @@ var getWeatherInfo = function (city) {
                 // UV 
 
                 var coordinates = "&lon=" + data.coord.lon + "&lat=" + data.coord.lat
-                var uvUrl = "http://api.openweathermap.org/data/2.5/uvi?";
+                var uvUrl = "https://api.openweathermap.org/data/2.5/uvi?";
                 fetch(uvUrl + coordinates + "&appid=" + apiKey).then(function(uvResponse){
                     uvResponse.json().then(function(uvData){
                         var uvValue = uvData["value"]
